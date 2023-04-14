@@ -1,7 +1,7 @@
 {
-  "name": "node-red-contrib-ui-pdf",
+  "name": "node-red-contrib-ui-editor",
   "version": "0.0.1",
-  "description": "A Node-RED dashboard ui node to display pdf data.",
+  "description": "A Node-RED dashboard ui node to display editor.",
   "peerDependencies": {
       "node-red-dashboard": ">2.15.0"
   },
@@ -11,21 +11,21 @@
   "license": "Apache-2.0",
   "keywords": [
     "dashboard",
-    "pdf"
+    "editor"
   ],
   "bugs": {
   },
-  "homepage": "https://github.com/HiroyasuNishiyama/node-red-contrib-ui-pdf/README.md",
+  "homepage": "https://github.com/HiroyasuNishiyama/node-red-contrib-ui-editor/README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HiroyasuNishiyama/node-red-contrib-ui-pdf.git"
+    "url": "git+https://github.com/HiroyasuNishiyama/node-red-contrib-ui-editor.git"
   },
   "node-red": {
     "nodes": {
-      "ui_pdf": "pdf.js"
+      "ui_editor": "editor.js"
     }
   },
-  "main": "pdf.js",
+  "main": "editor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

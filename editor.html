@@ -11,49 +11,8 @@
   limitations under the License.
 -->
 
-<script type="text/javascript">
-    RED.nodes.registerType('ui_pdf',{
-        category: 'dashboard',
-        color: 'rgb( 63, 173, 181)',
-        defaults: {
-            group: {type: 'ui_group', required:true},
-            order: {value: 0},
-            width: {
-                value: 0,
-                validate: function(v) {
-                    var valid = true
-                    var width = v||0;
-                    var currentGroup = $('#node-input-group').val()|| this.group;
-                    var groupNode = RED.nodes.node(currentGroup);
-                    valid = !groupNode || +width <= +groupNode.width;
-                    $("#node-input-size").toggleClass("input-error",!valid);
-                    return valid;
-                }},
-            height: {value: 0},
-            name: {value: ''},
-        },
-        inputs:1,
-        outputs:0,
-        icon: "cog.png",
-        paletteLabel:"pdf",
-        label: function() {
-            return this.name||"pdf";
-        },
-        labelStyle: function() {
-            return this.name?"node_label_italic":"";
-        },
-        oneditprepare: function() {
-            $("#node-input-size").elementSizer({
-                width: "#node-input-width",
-                height: "#node-input-height",
-                group: "#node-input-group"
-            });
-        }
-    });
-</script>
 
-
-<script type="text/html" data-template-name="ui_pdf">
+<script type="text/html" data-template-name="ui_editor">
     <div class="form-row" id="template-row-group">
         <label for="node-input-group"><i class="fa fa-table"></i> Group</span></label>
         <input type="text" id="node-input-group">
@@ -74,6 +33,52 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="ui_pdf">
-    <p>A Node-RED dashboard ui node to display pdf data.</p>
+
+<script type="text/javascript">
+    RED.nodes.registerType('ui_editor',{
+        category: 'dashboard',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            group: {type: 'ui_group', required:true},
+            order: {value: 0},
+            width: {
+                value: 0,
+                validate: function(v) {
+                    var valid = true
+                    var width = v||0;
+                    var currentGroup = $('#node-input-group').val()|| this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error",!valid);
+                    return valid;
+                }},
+            height: {value: 0},
+            name: {value: ''},
+
+        },
+        inputs:1,
+        outputs:0,
+        icon: "fa fa-cog",
+        paletteLabel:"editor",
+        label: function() {
+            return this.name || "editor";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
+
+        }
+    });
 </script>
+
+
+<script type="text/html" data-help-name="ui_editor">
+    <p>A Node-RED dashboard ui node to display editor.</p>
+</script>
+
