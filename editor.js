@@ -17,10 +17,197 @@
 
 
 module.exports = (RED) => {
+    const path = require("path");
+    const fs = require("fs");
+
+    const editor_config = [
+        {
+            name: null,
+            path: "node_modules/@editorjs/editorjs/dist/editor.js",
+            conf: "",
+        },
+        {
+            name: "checklist",
+            path: "node_modules/@editorjs/checklist/dist/bundle.js",
+            conf: String.raw`
+checklist: {
+    class: Checklist,
+    inlineToolbar: true,
+},
+`,
+        },
+        {
+            name: "code",
+            path: "node_modules/@editorjs/code/dist/bundle.js",
+            conf: String.raw`
+code: {
+    class: CodeTool,
+    placeholder: 'Enter a code' ,
+},
+`,
+        },
+        {
+            name: "delimiter",
+            path: "node_modules/@editorjs/delimiter/dist/bundle.js",
+            conf: String.raw`
+delimiter: Delimiter,
+`,
+        },
+        {
+            name: "embed",
+            path: "node_modules/@editorjs/embed/dist/bundle.js",
+            conf: String.raw`
+embed: Embed,
+`,
+        },
+        {
+            name: "header",
+            path: "node_modules/@editorjs/header/dist/bundle.js",
+            conf: String.raw`
+header: {
+    class: Header,
+    inlineToolbar: true,
+    placeholder: 'Enter a header',
+},
+`,
+        },
+        {
+            name: "inlineCode",
+            path: "node_modules/@editorjs/inline-code/dist/bundle.js",
+            conf: String.raw`
+inlineCode: {
+    class: InlineCode,
+},
+`,
+        },
+        {
+            name: "marker",
+            path: "node_modules/@editorjs/marker/dist/bundle.js",
+            conf: String.raw`
+marker: {
+    class: Marker,
+},
+`,
+        },
+        {
+            name: "list",
+            path: "node_modules/@editorjs/nested-list/dist/nested-list.js",
+            conf: String.raw`
+list: {
+    class: NestedList,
+    inlineToolbar: true,
+    config: {
+        defaultStyle: 'unordered'
+    }
+},
+`,
+        },
+/*
+        {
+            name: "paragraph",
+            path: "node_modules/@editorjs/paragraph/dist/bundle.js",
+            conf: String.raw`
+paragraph: {
+     class: Paragraph,
+     inlineToolbar: true,
+     placeholder: 'Enter a paragraph',
+},
+`,
+        },
+*/
+        {
+            name: "quote",
+            path: "node_modules/@editorjs/quote/dist/bundle.js",
+            conf: String.raw`
+quote: {
+    class: Quote,
+    inlineToolbar: true,
+    quotePlaceholder: 'Enter a quote',
+    captionPlaceholder: 'Quote\'s author',
+},
+`,
+        },
+        {
+            name: "raw",
+            path: "node_modules/@editorjs/raw/dist/bundle.js",
+            conf: String.raw`
+raw: {
+    class: RawTool,
+    placeholder: 'Enter a raw HTML code' ,
+},
+`
+        },
+        {
+            name: "image",
+            path: "node_modules/@editorjs/simple-image/dist/bundle.js",
+            conf: String.raw`
+image: SimpleImage,
+`,
+        },
+        {
+            name: "table",
+            path: "node_modules/@editorjs/table/dist/table.js",
+            conf: String.raw`
+table: {
+    class: Table,
+    inlineToolbar: true,
+    config: {
+        rows: 2,
+        cols: 3,
+    }
+},
+`,
+                
+        },
+        {
+            name: "textVariant",
+            path: "node_modules/@editorjs/text-variant-tune/dist/text-variant-tune.js",
+            tune: "textVariant",
+            conf: String.raw`
+            textVariant: {
+                class: TextVariantTune,
+            },
+`,
+        },
+        {
+            name: "underline",
+            path: "node_modules/@editorjs/underline/dist/bundle.js",
+            conf: String.raw`
+underline: {
+    class: Underline,
+},
+`,
+        },
+        {
+            name: "warning",
+            path: "node_modules/@editorjs/warning/dist/bundle.js",
+            conf: String.raw`
+warning: {
+class: Warning,
+    config: {
+        titlePlaceholder: 'Title',
+        messagePlaceholder: 'Message',
+    },
+},
+`,
+        },
+    ];
 
     function HTML(config) {
-        var configAsJson = JSON.stringify(config);
-        var html = String.raw`
+        let html = "";
+        const libs = editor_config.map((def) => def.path);
+        libs.forEach((lib) => {
+            const lib_path = path.join(__dirname, lib);
+            console.log("; lib:", lib_path);
+            html += "<script>\n";
+            html += fs.readFileSync(lib_path);
+            html += "</script>\n";
+        });
+        const tool_conf = editor_config.map((x) => x.conf).join("\n");
+        const tunes = editor_config.filter((x) => x.hasOwnProperty("tune")).map((x) => "'"+x.tune+"'").join(", ");
+        console.log("; conf:", tool_conf);
+        console.log("; tune:", tunes);
+        html += String.raw`
 <div>
     <div id="editorjs"/>
 </div>
@@ -61,100 +248,17 @@ function init() {
     console.log("; init editor");
     editor = new EditorJS({
         holderId: 'editorjs',
+        readOnly: false,
         tools: {
-            embed: Embed,
-            header: {
-                class: Header,
-                inlineToolbar: true,
-                placeholder: 'Enter a header',
-            },
-            paragraph: {
-                class: Paragraph,
-                inlineToolbar: true,
-                placeholder: 'Enter a paragraph',
-            },
-            delimiter: Delimiter,
-            list: {
-                class: NestedList,
-                inlineToolbar: true,
-                config: {
-                    defaultStyle: 'unordered'
-                }
-            },
-            checklist: {
-                class: Checklist,
-                inlineToolbar: true,
-            },
-            code: {
-                class: CodeTool,
-                placeholder: 'Enter a code' ,
-            },
-            raw: {
-                class: RawTool,
-                placeholder: 'Enter a raw HTML code' ,
-            },
-            table: {
-                class: Table,
-                inlineToolbar: true,
-                config: {
-                    rows: 2,
-                    cols: 3,
-                }
-            },
-            image: SimpleImage,
-            quote: {
-                class: Quote,
-                inlineToolbar: true,
-                quotePlaceholder: 'Enter a quote',
-                captionPlaceholder: 'Quote\'s author',
-            },
-            inlineCode: {
-                class: InlineCode,
-            },
-            underline: {
-                class: Underline,
-            },
-            marker: {
-                class: Marker,
-            },
-            warning: {
-                class: Warning,
-                config: {
-                    titlePlaceholder: 'Title',
-                    messagePlaceholder: 'Message',
-                },
-            },
-            textVariant: {
-                class: TextVariantTune,
-            },
+${tool_conf}
         },
-        tunes: [
-            'textVariant',
-        ],
+        tunes: [${tunes}],
         onReady: () => {
         }
     });
 }
 
 loadScripts([
-    "https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest",
-
-    "https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/code@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/delimiter",
-    "https://cdn.jsdelivr.net/npm/@editorjs/embed@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/header@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/marker@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/nested-list@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/paragraph",
-    "https://cdn.jsdelivr.net/npm/@editorjs/quote@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/raw@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/table@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/text-variant-tune@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/underline@latest",
-    "https://cdn.jsdelivr.net/npm/@editorjs/warning@latest",
 ], () => {
     init();
 });
