@@ -102,19 +102,6 @@ list: {
 },
 `,
         },
-/*
-        {
-            name: "paragraph",
-            path: "node_modules/@editorjs/paragraph/dist/bundle.js",
-            conf: String.raw`
-paragraph: {
-     class: Paragraph,
-     inlineToolbar: true,
-     placeholder: 'Enter a paragraph',
-},
-`,
-        },
-*/
         {
             name: "quote",
             path: "node_modules/@editorjs/quote/dist/bundle.js",
@@ -198,15 +185,12 @@ class: Warning,
         const libs = editor_config.map((def) => def.path);
         libs.forEach((lib) => {
             const lib_path = path.join(__dirname, lib);
-            console.log("; lib:", lib_path);
             html += "<script>\n";
             html += fs.readFileSync(lib_path);
             html += "</script>\n";
         });
         const tool_conf = editor_config.map((x) => x.conf).join("\n");
         const tunes = editor_config.filter((x) => x.hasOwnProperty("tune")).map((x) => "'"+x.tune+"'").join(", ");
-        console.log("; conf:", tool_conf);
-        console.log("; tune:", tunes);
         html += String.raw`
 <div>
     <div id="editorjs"/>
@@ -219,7 +203,6 @@ function loadScripts(list, callback) {
     if (list.length > 0) {
         var done = false;
         var src = list.shift();
-        console.log("; loading => ", src);
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
         script.src = src;
@@ -229,7 +212,6 @@ function loadScripts(list, callback) {
                 if (!this.readyState ||
                     (this.readyState === "loaded") ||
                     (this.readyState === "complete")) {
-                    console.log("; load: OK");
                     done = true;
                     loadScripts(list, callback);
                     if (head && script.parentNode) {
@@ -244,11 +226,11 @@ function loadScripts(list, callback) {
     }
 }
 
-function init() {
-    console.log("; init editor");
+function init(scope) {
+    let readonly = false;
     editor = new EditorJS({
         holderId: 'editorjs',
-        readOnly: false,
+        readOnly: readonly,
         tools: {
 ${tool_conf}
         },
@@ -256,11 +238,153 @@ ${tool_conf}
         onReady: () => {
         }
     });
+
+    scope.$watch("msg", (msg) => {
+        editor.isReady.then(() => {
+            const command = msg.command;
+            const payload = msg.payload;
+            if (command) {
+                if (command === "save") {
+                    editor.save().then((data) => {
+                        scope.send({payload: data});
+                    }).catch((error) => {
+                        console.log('Editor save data failed:', error);
+                    });
+                }
+                else if (command === "readOnly.toggle") {
+                    readonly = !readonly;
+                    editor.readOnly.toggle();
+                    scope.send({payload: readonly});
+                }
+                else if (command === "clear") {
+                    editor.blocks.clear();
+                    scope.send({payload: true});
+                }
+                else if (command === "render") {
+                    editor.blocks.render(payload);
+                    scope.send({payload: true});
+                }
+                else if (command === "delete") {
+                    editor.blocks.delete(payload);
+                    scope.send({payload: true});
+                }
+                else if (command === "move") {
+                    if (payload &&
+                        payload.hasOwnProperty("toIndex") &&
+                        payload.hasOwnProperty("fromIndex")) {
+                        const toIndex = payload.toIndex;
+                        const fromIndex = payload.fromIndex;
+                        editor.blocks.delete(toIndex, fromIndex);
+                        scope.send({payload: true});
+                    }
+                    else {
+                        scope.send({payload: false});
+                    }
+                }
+                else if (command === "getById") {
+                    editor.save().then((data) => {
+                        let result = null;
+                        if (data && data.blocks) {
+                            const blocks = data.blocks;
+                            result = blocks.find((e) => (e.id === payload));
+                        }
+                        if (result) {
+                            scope.send({payload: result});
+                        }
+                        else {
+                            scope.send({payload: false});
+                        }
+                    }).catch((error) => {
+                        scope.send({payload: false});
+                    });
+                }
+                else if (command === "getBlockByIndex") {
+                    editor.save().then((data) => {
+                        let result = null;
+                        if (data && data.blocks) {
+                            const blocks = data.blocks;
+                            try {
+                                result = blocks[payload];
+                            }
+                            catch (e) {
+                                // ignore illegal access
+                                console.log("; error: ", e);
+                            }
+                        }
+                        if (result) {
+                            scope.send({payload: result});
+                        }
+                        else {
+                            scope.send({payload: false});
+                        }
+                    }).catch((error) => {
+                        scope.send({payload: false});
+                    });
+                }
+                else if (command === "getCurrentBlockIndex") {
+                    const index = editor.blocks.getCurrentBlockIndex();
+                    scope.send({payload: index});
+                }
+                else if (command === "getBlocksCount") {
+                    const count = editor.blocks.getBlocksCount();
+                    scope.send({payload: count});
+                }
+                else if (command === "stretchBlock") {
+                    if (payload &&
+                        payload.hasOwnProperty("index") &&
+                        payload.hasOwnProperty("status")) {
+                        editor.blocks.stretchBlock(payload.index, payload.status);
+                        scope.send({payload: true});
+                    }
+                    else {
+                        scope.send({payload: false});
+                    }
+                }
+                else if (command === "insert") {
+                    if (payload &&
+                        payload.hasOwnProperty("type") &&
+                        payload.hasOwnProperty("data") &&
+                        payload.hasOwnProperty("config") &&
+                        payload.hasOwnProperty("index") &&
+                        payload.hasOwnProperty("needsToSetFocus")) {
+                        editor.blocks.insert(payload.type,
+                                             payload.data, 
+                                             payload.config, 
+                                             payload.index, 
+                                             payload.needToSetFocus);
+                        scope.send({payload: true});
+                    }
+                    else {
+                        scope.send({payload: false});
+                    }
+                }
+                else if (command === "update") {
+                    if (payload &&
+                        payload.hasOwnProperty("id") &&
+                        payload.hasOwnProperty("data")) {
+                        editor.blocks.update(payload.id,
+                                             payload.data);
+                        scope.send({payload: true});
+                    }
+                    else {
+                        scope.send({payload: false});
+                    }
+                }
+                else if (command === "composeBlockData") {
+                    editor.blocks.composeBlockData(payload).then((data) => {
+                        scope.send({payload: data});
+                    });
+                }
+            }
+        }).catch((error) => {
+            console.log('Editor initialization failed:', error);
+        });
+    });
 }
 
 loadScripts([
 ], () => {
-    init();
+    init(scope);
 });
 })(scope)
 </script>
@@ -315,32 +439,6 @@ loadScripts([
                     },
 
                     initController: function($scope, events) {
-                        //debugger;
-
-                        $scope.flag = true;   // not sure if this is needed?
-
-                        $scope.init = function (config) {
-                            $scope.config = config;
-
-                            $scope.textContent = config.textLabel;
-                        };
-
-                        $scope.$watch('msg', function(msg) {
-                            if (!msg) { return; }
-
-                            $scope.textContent = msg.payload;
-                        });
-
-                        $scope.change = function() {
-                            $scope.send({payload: $scope.textContent});
-                        };
-
-                        $scope.enterkey = function(keyEvent){
-                            if (keyEvent.which === 13) {
-                                $scope.send({payload: $scope.textContent});
-                            }
-                        };
-
                     }
                 });
             }
