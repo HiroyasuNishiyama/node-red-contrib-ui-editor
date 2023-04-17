@@ -11,7 +11,6 @@
   limitations under the License.
 -->
 
-
 <script type="text/html" data-template-name="ui_editor">
     <div class="form-row" id="template-row-group">
         <label for="node-input-group"><i class="fa fa-table"></i> Group</span></label>
@@ -26,11 +25,18 @@
     </div>
 
     </br>
-
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+
+    </br>
+    <div class="form-row">
+        <label>Data</label>
+        <input type="checkbox" id="node-input-readonly" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-readonly" style="width: 70%;"><span>Read Only</span></label>
+    </div>
+    
 </script>
 
 
@@ -43,7 +49,7 @@
             order: {value: 0},
             width: {
                 value: 0,
-                validate: function(v) {
+                validate: (v) => {
                     var valid = true
                     var width = v||0;
                     var currentGroup = $('#node-input-group').val()|| this.group;
@@ -55,26 +61,28 @@
             height: {value: 0},
             name: {value: ''},
 
+            readonly: {value: false},
         },
         inputs: 1,
         outputs: 1,
         align: "right",
         icon: "font-awesome/fa-list-alt",
         paletteLabel:"editor",
-        label: function() {
+        label: () => {
             return this.name || "editor";
         },
-        labelStyle: function() {
+        labelStyle: () => {
             return this.name ? "node_label_italic" : "";
         },
-        oneditprepare: function() {
+        oneditprepare: () => {
             $("#node-input-size").elementSizer({
                 width: "#node-input-width",
                 height: "#node-input-height",
                 group: "#node-input-group"
             });
-
-        }
+        },
+        oneditsave: () => {
+        },
     });
 </script>
 

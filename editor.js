@@ -22,7 +22,7 @@ module.exports = (RED) => {
 
     const editor_config = [
         {
-            name: null,
+            name: "editor",
             path: "node_modules/@editorjs/editorjs/dist/editor.js",
             conf: "",
         },
@@ -182,6 +182,7 @@ class: Warning,
 
     function HTML(config) {
         let html = "";
+/*
         const libs = editor_config.map((def) => def.path);
         libs.forEach((lib) => {
             const lib_path = path.join(__dirname, lib);
@@ -189,6 +190,8 @@ class: Warning,
             html += fs.readFileSync(lib_path);
             html += "</script>\n";
         });
+*/
+        const libURIs = editor_config.map((x) => "'"+"ui_editor/libs/"+x.name+"'").join(", ");
         const tool_conf = editor_config.map((x) => x.conf).join("\n");
         const tunes = editor_config.filter((x) => x.hasOwnProperty("tune")).map((x) => "'"+x.tune+"'").join(", ");
         html += String.raw`
@@ -228,17 +231,18 @@ function loadScripts(list, callback) {
 
 function init(scope) {
     let readonly = false;
-    editor = new EditorJS({
-        holderId: 'editorjs',
-        readOnly: readonly,
-        tools: {
+    if (!editor) {
+        const data = {};
+        editor = new EditorJS({
+            holder: 'editorjs',
+            readOnly: readonly,
+            tools: {
 ${tool_conf}
-        },
-        tunes: [${tunes}],
-        onReady: () => {
-        }
-    });
-
+            },
+            tunes: [${tunes}],
+            data: data,
+        });
+    }
     scope.$watch("msg", (msg) => {
         editor.isReady.then(() => {
             const command = msg.command;
@@ -382,8 +386,7 @@ ${tool_conf}
     });
 }
 
-loadScripts([
-], () => {
+loadScripts([${libURIs}], () => {
     init(scope);
 });
 })(scope)
@@ -445,7 +448,7 @@ loadScripts([
         }
         catch (e) {
             // eslint-disable-next-line no-console
-            console.warn(e);		// catch any errors that may occur and display them in the web browsers console
+            console.warn(e);
         }
 
         node.on("close", function() {
@@ -458,4 +461,17 @@ loadScripts([
     setImmediate(function() {
         RED.nodes.registerType("ui_editor", EditorNode);
     })
+
+    RED.httpAdmin.get("/ui/ui_editor/libs/:name", (req, res) => {
+        const conf = editor_config.find((x) => (x.name === req.params.name));
+        if (conf) {
+            const lib_path = path.join(__dirname, conf.path);
+            if (fs.existsSync(lib_path)) {
+                res.sendFile(lib_path);
+                return;
+            }
+        }
+        res.writeHead(404);
+        return res.end("Unknown library name");
+    });
 }
