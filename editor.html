@@ -31,10 +31,24 @@
     </div>
 
     </br>
-    <div class="form-row">
+    <div class="form-row" style="margin-bottom: 0px;">
         <label>Data</label>
         <input type="checkbox" id="node-input-readonly" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-readonly" style="width: 70%;"><span>Read Only</span></label>
+    </div>
+    <div class="form-row">
+        <label></label>
+        <input type="checkbox" id="node-input-monitorUpdate" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-monirotUpdate" style="width: 70%;"><span>Monitor Update</span></label>
+        <input type="hidden" id="node-input-outputs"/>
+    </div>
+    
+
+    <div class="form-row" style="margin-bottom: 0px;">
+        <label>Plugin</label>
+    </div>
+    <div class="form-row node-input-plugin-container-row">
+        <ol id="node-input-plugin-container"></ol>
     </div>
     
 </script>
@@ -62,6 +76,10 @@
             name: {value: ''},
 
             readonly: {value: false},
+            monitorUpdate: {value: false},
+            plugins: {value: []},
+
+            outputs: {value: 1},
         },
         inputs: 1,
         outputs: 1,
@@ -79,6 +97,50 @@
                 width: "#node-input-width",
                 height: "#node-input-height",
                 group: "#node-input-group"
+            });
+            if ($("#node-input-monitorUpdate").prop("checked")) {
+                $("#node-input-outputs").val(2);
+            }
+            else {
+                $("#node-input-outputs").val(1);
+            }
+            $("#node-input-plugin-container").css({
+                "min-height": "150px",
+                "min-width": "450px",
+            }).editableList({
+                addItem: (container, i, opt) => {
+                    const row0 = $("<div/>", {
+                        class: "form-row"
+                    }).appendTo(container);
+                    const name = $("<input/>", {
+                        placeholder: "name",
+                        type: "text",
+                    }).css({
+                        width: "30%",
+                    }).appendTo(row0);
+                    const conf = $("<input/>", {
+                        placeholder: "config",
+                        type: "text",
+                    }).css({
+                        width: "30%",
+                    }).appendTo(row0);
+                    conf.typedInput({
+                        types: ["json"]
+                    });
+
+                    const row1 = $("<div/>", {
+                        class: "form-row"
+                    }).appendTo(container);
+                    const URI = $("<input/>", {
+                        placeholder: "URI",
+                        type: "text",
+                    }).css({
+                    }).appendTo(row1);
+                    URI.typedInput({
+                        types: ["str", "env"]
+                    });
+                },
+                removable: true,
             });
         },
         oneditsave: () => {

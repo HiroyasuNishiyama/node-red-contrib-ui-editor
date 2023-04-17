@@ -181,6 +181,7 @@ class: Warning,
     ];
 
     function HTML(config) {
+        const monitor_update = !!config.monitorUpdate;
         let html = "";
 /*
         const libs = editor_config.map((def) => def.path);
@@ -241,6 +242,11 @@ ${tool_conf}
             },
             tunes: [${tunes}],
             data: data,
+            onChange: (api, event) => {
+                if (${monitor_update}) {
+                    scope.send([null, {payload: true}]);
+                }
+            }
         });
     }
     scope.$watch("msg", (msg) => {
