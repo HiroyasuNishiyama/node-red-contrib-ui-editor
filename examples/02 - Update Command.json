@@ -1,0 +1,244 @@
+[
+    {
+        "id": "837f0c4825e8977f",
+        "type": "ui_editor",
+        "z": "b5458661fb64edf9",
+        "group": "8f388aa74bf14831",
+        "order": 0,
+        "width": "10",
+        "height": "3",
+        "name": "",
+        "readonly": true,
+        "monitorUpdate": false,
+        "outputs": 1,
+        "x": 630,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f9d3e27a79b1c4ef",
+        "type": "inject",
+        "z": "b5458661fb64edf9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "render",
+        "payload": "{\"time\":1681960998214,\"blocks\":[{\"id\":\"EdC647mv67\",\"type\":\"header\",\"data\":{\"text\":\"Example of Update Command\",\"level\":2},\"tunes\":{\"textVariant\":\"\"}},{\"id\":\"Ye0mDAFbhC\",\"type\":\"checklist\",\"data\":{\"items\":[{\"text\":\"Item1\",\"checked\":false},{\"text\":\"Item2\",\"checked\":false}]},\"tunes\":{\"textVariant\":\"\"}}],\"version\":\"2.26.5\"}",
+        "payloadType": "json",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "837f0c4825e8977f",
+                "5a775f502eb23390"
+            ]
+        ]
+    },
+    {
+        "id": "5a775f502eb23390",
+        "type": "change",
+        "z": "b5458661fb64edf9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "checklist",
+                "pt": "flow",
+                "to": "payload.blocks[1]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "checklist",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "2de04d47fe6e9f16"
+            ]
+        ]
+    },
+    {
+        "id": "822830ce083b950c",
+        "type": "ui_switch",
+        "z": "b5458661fb64edf9",
+        "name": "",
+        "label": "Item1",
+        "tooltip": "",
+        "group": "8f388aa74bf14831",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "Item1",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "7cbf4a32551bf8c5"
+            ]
+        ]
+    },
+    {
+        "id": "5b331a5ee460dcf4",
+        "type": "ui_switch",
+        "z": "b5458661fb64edf9",
+        "name": "",
+        "label": "Item2",
+        "tooltip": "",
+        "group": "8f388aa74bf14831",
+        "order": 3,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "Item2",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 250,
+        "y": 280,
+        "wires": [
+            [
+                "7cbf4a32551bf8c5"
+            ]
+        ]
+    },
+    {
+        "id": "2cec6cbf76b772d9",
+        "type": "debug",
+        "z": "b5458661fb64edf9",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "7cbf4a32551bf8c5",
+        "type": "function",
+        "z": "b5458661fb64edf9",
+        "name": "Set check state",
+        "func": "const checklist = flow.get(\"checklist\");\nconst payload = msg.payload;\nconst topic = msg.topic;\nlet pos = -1;\nswitch (topic) {\n    case \"Item1\": pos = 0; break;\n    case \"Item2\": pos = 1; break;\n}\nif (pos >= 0) {\n    const items = checklist.data.items;\n    const item = items[pos];\n    item.checked = payload;\n    msg.payload = checklist;\n    msg.topic = \"update\";\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 220,
+        "wires": [
+            [
+                "2cec6cbf76b772d9",
+                "837f0c4825e8977f"
+            ]
+        ]
+    },
+    {
+        "id": "2de04d47fe6e9f16",
+        "type": "debug",
+        "z": "b5458661fb64edf9",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "02ba4055d20d311f",
+        "type": "comment",
+        "z": "b5458661fb64edf9",
+        "name": "Update Command Example",
+        "info": "",
+        "x": 160,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "cfc6b4cd37f068fa",
+        "type": "comment",
+        "z": "b5458661fb64edf9",
+        "name": "↑ Create Update Command",
+        "info": "",
+        "x": 480,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "8f388aa74bf14831",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "b93cba5fc1390d43",
+        "order": 1,
+        "disp": false,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b93cba5fc1390d43",
+        "type": "ui_tab",
+        "name": "Example2",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    }
+]
