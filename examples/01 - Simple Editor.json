@@ -1,0 +1,264 @@
+[
+    {
+        "id": "64e00bd34c7c5c21",
+        "type": "ui_editor",
+        "z": "0fe682fbccc484f8",
+        "group": "68f22f5a2cc4bb38",
+        "order": 0,
+        "width": "12",
+        "height": "12",
+        "name": "",
+        "readonly": false,
+        "monitorUpdate": false,
+        "outputs": 1,
+        "x": 330,
+        "y": 140,
+        "wires": [
+            [
+                "da67dec61ee08175",
+                "b982f5bbeb2110a5"
+            ]
+        ]
+    },
+    {
+        "id": "62e73babda38d70a",
+        "type": "ui_button",
+        "z": "0fe682fbccc484f8",
+        "name": "",
+        "group": "f7666fc9f9e34882",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Load",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "content",
+        "payloadType": "flow",
+        "topic": "render",
+        "topicType": "str",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "64e00bd34c7c5c21"
+            ]
+        ]
+    },
+    {
+        "id": "dc10e11d98d26a7c",
+        "type": "ui_button",
+        "z": "0fe682fbccc484f8",
+        "name": "",
+        "group": "f7666fc9f9e34882",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Save",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "save",
+        "topicType": "str",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "64e00bd34c7c5c21"
+            ]
+        ]
+    },
+    {
+        "id": "5d8a41ab8854b62e",
+        "type": "ui_button",
+        "z": "0fe682fbccc484f8",
+        "name": "",
+        "group": "f7666fc9f9e34882",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Clear",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "64e00bd34c7c5c21"
+            ]
+        ]
+    },
+    {
+        "id": "da67dec61ee08175",
+        "type": "debug",
+        "z": "0fe682fbccc484f8",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "b3ba62ee38fb90f8",
+        "type": "change",
+        "z": "0fe682fbccc484f8",
+        "name": "save content",
+        "rules": [
+            {
+                "t": "set",
+                "p": "content",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b982f5bbeb2110a5",
+        "type": "switch",
+        "z": "0fe682fbccc484f8",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "save",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 390,
+        "y": 240,
+        "wires": [
+            [
+                "b3ba62ee38fb90f8"
+            ]
+        ]
+    },
+    {
+        "id": "1d084fafcfd51407",
+        "type": "inject",
+        "z": "0fe682fbccc484f8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "render",
+        "payload": "{\"time\":1681916165281,\"blocks\":[{\"id\":\"vzsCRNZLSM\",\"type\":\"header\",\"data\":{\"text\":\"Example of Node-RED Dashboard <code class=\\\"inline-code\\\">ui_editor</code> node\",\"level\":2},\"tunes\":{\"textVariant\":\"\"}},{\"id\":\"skdZ6eyiDP\",\"type\":\"paragraph\",\"data\":{\"text\":\"<code class=\\\"inline-code\\\">ui_editor</code>&nbsp;is an UI widget based on <a href=\\\"https://editorjs.io/\\\">Editor.js</a> that can edit document using <u class=\\\"cdx-underline\\\">block-style editor</u>.&nbsp; It supports various block types such as list, table, image, and many more.\"},\"tunes\":{\"textVariant\":\"\"}},{\"id\":\"d3nzEi6AAb\",\"type\":\"checklist\",\"data\":{\"items\":[{\"text\":\"Todo1\",\"checked\":false},{\"text\":\"Todo2\",\"checked\":true}]},\"tunes\":{\"textVariant\":\"\"}},{\"id\":\"D35rtYCmJm\",\"type\":\"table\",\"data\":{\"withHeadings\":true,\"content\":[[\"No.\",\"Name\",\"Price\"],[\"1\",\"Item1\",\"10\"],[\"2\",\"Item2\",\"20\"]]},\"tunes\":{\"textVariant\":\"\"}},{\"id\":\"jO31aZPyvP\",\"type\":\"embed\",\"data\":{\"service\":\"youtube\",\"source\":\"https://youtu.be/R9bV2MytHr0\",\"embed\":\"https://www.youtube.com/embed/R9bV2MytHr0\",\"width\":580,\"height\":320,\"caption\":\"What's new in Node-RED 3.0\"},\"tunes\":{\"textVariant\":\"\"}}],\"version\":\"2.26.5\"}",
+        "payloadType": "json",
+        "x": 370,
+        "y": 300,
+        "wires": [
+            [
+                "b3ba62ee38fb90f8"
+            ]
+        ]
+    },
+    {
+        "id": "3799b5e3f8fd2de2",
+        "type": "comment",
+        "z": "0fe682fbccc484f8",
+        "name": "Simple In-Memory Editor",
+        "info": "",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1b531bc476062e86",
+        "type": "comment",
+        "z": "0fe682fbccc484f8",
+        "name": "↓ Commands for Editor",
+        "info": "",
+        "x": 180,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "2d1d66ab5bb1f5cf",
+        "type": "comment",
+        "z": "0fe682fbccc484f8",
+        "name": "↓ Save contents data in flow context",
+        "info": "",
+        "x": 620,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "68f22f5a2cc4bb38",
+        "type": "ui_group",
+        "name": "Editor",
+        "tab": "58ba9fed0a38efef",
+        "order": 2,
+        "disp": false,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f7666fc9f9e34882",
+        "type": "ui_group",
+        "name": "Buttons",
+        "tab": "58ba9fed0a38efef",
+        "order": 1,
+        "disp": false,
+        "width": "2",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "58ba9fed0a38efef",
+        "type": "ui_tab",
+        "name": "Example1",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
