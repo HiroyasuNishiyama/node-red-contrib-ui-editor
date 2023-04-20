@@ -23,12 +23,12 @@ module.exports = (RED) => {
     const editor_config = [
         {
             name: "editor",
-            path: "node_modules/@editorjs/editorjs/dist/editor.js",
+            path: "@editorjs/editorjs/dist/editor.js",
             conf: "",
         },
         {
             name: "checklist",
-            path: "node_modules/@editorjs/checklist/dist/bundle.js",
+            path: "@editorjs/checklist/dist/bundle.js",
             conf: String.raw`
 checklist: {
     class: Checklist,
@@ -38,7 +38,7 @@ checklist: {
         },
         {
             name: "code",
-            path: "node_modules/@editorjs/code/dist/bundle.js",
+            path: "@editorjs/code/dist/bundle.js",
             conf: String.raw`
 code: {
     class: CodeTool,
@@ -48,21 +48,21 @@ code: {
         },
         {
             name: "delimiter",
-            path: "node_modules/@editorjs/delimiter/dist/bundle.js",
+            path: "@editorjs/delimiter/dist/bundle.js",
             conf: String.raw`
 delimiter: Delimiter,
 `,
         },
         {
             name: "embed",
-            path: "node_modules/@editorjs/embed/dist/bundle.js",
+            path: "@editorjs/embed/dist/bundle.js",
             conf: String.raw`
 embed: Embed,
 `,
         },
         {
             name: "header",
-            path: "node_modules/@editorjs/header/dist/bundle.js",
+            path: "@editorjs/header/dist/bundle.js",
             conf: String.raw`
 header: {
     class: Header,
@@ -73,7 +73,7 @@ header: {
         },
         {
             name: "inlineCode",
-            path: "node_modules/@editorjs/inline-code/dist/bundle.js",
+            path: "@editorjs/inline-code/dist/bundle.js",
             conf: String.raw`
 inlineCode: {
     class: InlineCode,
@@ -82,7 +82,7 @@ inlineCode: {
         },
         {
             name: "marker",
-            path: "node_modules/@editorjs/marker/dist/bundle.js",
+            path: "@editorjs/marker/dist/bundle.js",
             conf: String.raw`
 marker: {
     class: Marker,
@@ -91,7 +91,7 @@ marker: {
         },
         {
             name: "list",
-            path: "node_modules/@editorjs/nested-list/dist/nested-list.js",
+            path: "@editorjs/nested-list/dist/nested-list.js",
             conf: String.raw`
 list: {
     class: NestedList,
@@ -104,7 +104,7 @@ list: {
         },
         {
             name: "quote",
-            path: "node_modules/@editorjs/quote/dist/bundle.js",
+            path: "@editorjs/quote/dist/bundle.js",
             conf: String.raw`
 quote: {
     class: Quote,
@@ -116,7 +116,7 @@ quote: {
         },
         {
             name: "raw",
-            path: "node_modules/@editorjs/raw/dist/bundle.js",
+            path: "@editorjs/raw/dist/bundle.js",
             conf: String.raw`
 raw: {
     class: RawTool,
@@ -126,14 +126,14 @@ raw: {
         },
         {
             name: "image",
-            path: "node_modules/@editorjs/simple-image/dist/bundle.js",
+            path: "@editorjs/simple-image/dist/bundle.js",
             conf: String.raw`
 image: SimpleImage,
 `,
         },
         {
             name: "table",
-            path: "node_modules/@editorjs/table/dist/table.js",
+            path: "@editorjs/table/dist/table.js",
             conf: String.raw`
 table: {
     class: Table,
@@ -147,7 +147,7 @@ table: {
         },
         {
             name: "textVariant",
-            path: "node_modules/@editorjs/text-variant-tune/dist/text-variant-tune.js",
+            path: "@editorjs/text-variant-tune/dist/text-variant-tune.js",
             tune: "textVariant",
             conf: String.raw`
             textVariant: {
@@ -157,7 +157,7 @@ table: {
         },
         {
             name: "underline",
-            path: "node_modules/@editorjs/underline/dist/bundle.js",
+            path: "@editorjs/underline/dist/bundle.js",
             conf: String.raw`
 underline: {
     class: Underline,
@@ -166,7 +166,7 @@ underline: {
         },
         {
             name: "warning",
-            path: "node_modules/@editorjs/warning/dist/bundle.js",
+            path: "@editorjs/warning/dist/bundle.js",
             conf: String.raw`
 warning: {
 class: Warning,
@@ -469,10 +469,13 @@ loadScripts([${libURIs}], () => {
     RED.httpAdmin.get("/ui/ui_editor/libs/:name", (req, res) => {
         const conf = editor_config.find((x) => (x.name === req.params.name));
         if (conf) {
-            const lib_path = path.join(__dirname, conf.path);
+            const lib_path = require.resolve(conf.path);
             if (fs.existsSync(lib_path)) {
                 res.sendFile(lib_path);
                 return;
+            }
+            else {
+                console.log("; failed to load: ", lib_path);
             }
         }
         res.writeHead(404);
