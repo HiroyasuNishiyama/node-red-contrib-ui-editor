@@ -1,0 +1,12 @@
+{
+    "ui_editor": {
+        "label": {
+            "group": "Group",
+            "size": "Size",
+            "data": "Data",
+            "readonly": "Read Only",
+            "monitor": "Monitor Change",
+            "name": "Name"
+        }
+    }
+}

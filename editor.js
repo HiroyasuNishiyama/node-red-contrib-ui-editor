@@ -144,7 +144,6 @@ table: {
     }
 },
 `,
-                
         },
         {
             name: "textVariant",
@@ -181,23 +180,16 @@ class: Warning,
     ];
 
     function HTML(config) {
+        const id = "editorjs-"+config.id;
         const monitor_update = !!config.monitorUpdate;
+        const readonly = !!config.readonly;
         let html = "";
-/*
-        const libs = editor_config.map((def) => def.path);
-        libs.forEach((lib) => {
-            const lib_path = path.join(__dirname, lib);
-            html += "<script>\n";
-            html += fs.readFileSync(lib_path);
-            html += "</script>\n";
-        });
-*/
         const libURIs = editor_config.map((x) => "'"+"ui_editor/libs/"+x.name+"'").join(", ");
         const tool_conf = editor_config.map((x) => x.conf).join("\n");
         const tunes = editor_config.filter((x) => x.hasOwnProperty("tune")).map((x) => "'"+x.tune+"'").join(", ");
         html += String.raw`
 <div>
-    <div id="editorjs"/>
+    <div id="${id}"/>
 </div>
 <script>
 ((scope) => {
@@ -231,32 +223,38 @@ function loadScripts(list, callback) {
 }
 
 function init(scope) {
-    let readonly = false;
-    if (!editor) {
-        const data = {};
-        editor = new EditorJS({
-            holder: 'editorjs',
-            readOnly: readonly,
-            tools: {
+    let readonly = ${readonly};
+    const data = {};
+    editor = new EditorJS({
+        holder: '${id}',
+        readOnly: readonly,
+        tools: {
 ${tool_conf}
-            },
-            tunes: [${tunes}],
-            data: data,
-            onChange: (api, event) => {
-                if (${monitor_update}) {
-                    scope.send([null, {payload: true}]);
-                }
+        },
+        tunes: [${tunes}],
+        data: data,
+        onChange: (api, event) => {
+            if (${monitor_update}) {
+                scope.send([null, {payload: event}]);
             }
-        });
-    }
+        }
+    });
+
     scope.$watch("msg", (msg) => {
+        function send(result) {
+            msg.payload = result; 
+            scope.send(msg);
+        }
+        if (!msg) {
+            return;
+        }
         editor.isReady.then(() => {
-            const command = msg.command;
+            const command = msg.topic;
             const payload = msg.payload;
             if (command) {
                 if (command === "save") {
                     editor.save().then((data) => {
-                        scope.send({payload: data});
+                        send(data);
                     }).catch((error) => {
                         console.log('Editor save data failed:', error);
                     });
@@ -264,19 +262,19 @@ ${tool_conf}
                 else if (command === "readOnly.toggle") {
                     readonly = !readonly;
                     editor.readOnly.toggle();
-                    scope.send({payload: readonly});
+                    send(readonly);
                 }
                 else if (command === "clear") {
                     editor.blocks.clear();
-                    scope.send({payload: true});
+                    send(true);
                 }
                 else if (command === "render") {
                     editor.blocks.render(payload);
-                    scope.send({payload: true});
+                    send(true);
                 }
                 else if (command === "delete") {
                     editor.blocks.delete(payload);
-                    scope.send({payload: true});
+                    send(true);
                 }
                 else if (command === "move") {
                     if (payload &&
@@ -285,10 +283,10 @@ ${tool_conf}
                         const toIndex = payload.toIndex;
                         const fromIndex = payload.fromIndex;
                         editor.blocks.delete(toIndex, fromIndex);
-                        scope.send({payload: true});
+                        send(true);
                     }
                     else {
-                        scope.send({payload: false});
+                        send(false);
                     }
                 }
                 else if (command === "getById") {
@@ -299,13 +297,13 @@ ${tool_conf}
                             result = blocks.find((e) => (e.id === payload));
                         }
                         if (result) {
-                            scope.send({payload: result});
+                            send(result);
                         }
                         else {
-                            scope.send({payload: false});
+                            send(false);
                         }
                     }).catch((error) => {
-                        scope.send({payload: false});
+                        send(false);
                     });
                 }
                 else if (command === "getBlockByIndex") {
@@ -322,32 +320,32 @@ ${tool_conf}
                             }
                         }
                         if (result) {
-                            scope.send({payload: result});
+                            send(result);
                         }
                         else {
-                            scope.send({payload: false});
+                            send(false);
                         }
                     }).catch((error) => {
-                        scope.send({payload: false});
+                        send(false);
                     });
                 }
                 else if (command === "getCurrentBlockIndex") {
                     const index = editor.blocks.getCurrentBlockIndex();
-                    scope.send({payload: index});
+                    send(index);
                 }
                 else if (command === "getBlocksCount") {
                     const count = editor.blocks.getBlocksCount();
-                    scope.send({payload: count});
+                    send(count);
                 }
                 else if (command === "stretchBlock") {
                     if (payload &&
                         payload.hasOwnProperty("index") &&
                         payload.hasOwnProperty("status")) {
                         editor.blocks.stretchBlock(payload.index, payload.status);
-                        scope.send({payload: true});
+                        send(true);
                     }
                     else {
-                        scope.send({payload: false});
+                        send(false);
                     }
                 }
                 else if (command === "insert") {
@@ -362,10 +360,10 @@ ${tool_conf}
                                              payload.config, 
                                              payload.index, 
                                              payload.needToSetFocus);
-                        scope.send({payload: true});
+                        send(true);
                     }
                     else {
-                        scope.send({payload: false});
+                        send(false);
                     }
                 }
                 else if (command === "update") {
@@ -374,15 +372,15 @@ ${tool_conf}
                         payload.hasOwnProperty("data")) {
                         editor.blocks.update(payload.id,
                                              payload.data);
-                        scope.send({payload: true});
+                        send(true);
                     }
                     else {
-                        scope.send({payload: false});
+                        send(false);
                     }
                 }
                 else if (command === "composeBlockData") {
                     editor.blocks.composeBlockData(payload).then((data) => {
-                        scope.send({payload: data});
+                        send(data);
                     });
                 }
             }
