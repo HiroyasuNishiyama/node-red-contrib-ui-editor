@@ -31,7 +31,9 @@ Inline tools can be invoked by selecting text.
 
 ![inline tool](figs/inline-tool.png)
 
-![Demo](figs/demo.mp4)
+
+https://user-images.githubusercontent.com/30289092/233401827-e945885f-ae4b-4caf-bb67-37abb6a98fb9.mp4
+
 
 The editor supports following plugins for blocks and inline tools:
 
