@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-ui-editor",
   "version": "0.0.1",
-  "description": "A Node-RED dashboard ui node to display editor.",
+  "description": "A Node-RED dashboard ui node for block-style editor.",
   "peerDependencies": {
     "node-red-dashboard": ">2.15.0"
   },
@@ -9,8 +9,10 @@
   "contributors": [],
   "license": "Apache-2.0",
   "keywords": [
-    "dashboard",
-    "editor"
+      "node-red",
+      "node-red-dashboard",
+      "dashboard",
+      "editor"
   ],
   "bugs": {},
   "homepage": "https://github.com/HiroyasuNishiyama/node-red-contrib-ui-editor/README.md",
