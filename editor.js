@@ -38,10 +38,10 @@ checklist: {
         },
         {
             name: "code",
-            path: "@editorjs/code/dist/bundle.js",
+            path: "@calumk/editorjs-codeflask/dist/editorjs-codeflask.bundle.js",
             conf: String.raw`
 code: {
-    class: CodeTool,
+    class: editorjsCodeflask,
     placeholder: 'Enter a code' ,
 },
 `,
