@@ -188,6 +188,35 @@ class: Warning,
         const tool_conf = editor_config.map((x) => x.conf).join("\n");
         const tunes = editor_config.filter((x) => x.hasOwnProperty("tune")).map((x) => "'"+x.tune+"'").join(", ");
         html += String.raw`
+<style>
+.ce-toolbar__plus {
+    background-color: var(--nr-dashboard-widgetBackgroundColor);
+}
+.ce-toolbar__settings-btn {
+    background-color: var(--nr-dashboard-widgetBackgroundColor);
+}
+.ce-popover--opened {
+    color: #333333;
+}
+.ce-conversion-toolbar {
+    color: #333333;
+}
+.ce-inline-toolbar {
+    color: #333333;
+}
+.ce-paragraph::selection {
+    color: #333333;
+}
+.ce-block a {
+    color: #fd7d33;
+}
+.tc-toolbox__toggler {
+    background-color: var(--nr-dashboard-widgetBackgroundColor);
+}
+.tc-popover {
+    color: #333333;
+}
+</style>
 <div>
     <div id="${id}"/>
 </div>
