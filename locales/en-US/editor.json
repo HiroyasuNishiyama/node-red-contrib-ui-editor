@@ -7,6 +7,9 @@
             "readonly": "Read Only",
             "monitor": "Monitor Change",
             "name": "Name"
+        },
+        "error": {
+            "no-group": "group not configured"
         }
     }
 }
