@@ -4,7 +4,7 @@
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>topic<span class="property-type">string</span></dt>
-        <dd>Command name for controlling editor's behavior:
+        <dd>Command name for controlling editor's behavior.
         </dd>
 
         <dt>payload<span class="property-type">any</span></dt>
@@ -21,11 +21,11 @@
 
     <h3>Details</h3>
     <p>This widget displays an interactive block-style editor implemented by Editor.js on the Node-RED dashboard. </p>
-    <p>If *Read Only* is checked, interactive modification of the editor content is disabled (modification via command API is possible).</p>
-    <p>If *Monitor Change* is checked, each time an update occurs, its event message is sent to the second port.</p>
+    <p>If <i>Read Only</i> is checked, interactive modification of the editor content is disabled (modification via command API is possible).</p>
+    <p>If <i>Monitor Change</i> is checked, each time an update occurs, its event message is sent to the second port.</p>
 
     <h3>Controlling Editor's behavior</h3>
-    <p>Editor's behavior can be controlled by using input message.  The message must contain <code>topic</code> property and optional <code>property</code> value.</p>
+    <p>Editor's behavior can be controlled by using input message.  The message must contain <code>topic</code> property and optional <code>payload</code> value.</p>
     <p>Supported command are:<br/>
         <dl>
             <dt><code>save</code></dt>
@@ -38,7 +38,7 @@
                     Sends a message to the first port with <code>true</code> as <code>payload</code> value.</dd>
             <dt><code>render</code></dt>
                 <dd>Renders content data passwd via <code>payload</code>.<br/>
-                The content data format is same as the outpur of <code>save</code> command.<br/>
+                The content data format is same as the output of <code>save</code> command.<br/>
                 Sends a message to the first port with <code>true</code> as <code>payload</code> value.</dd>
             <dt><code>delete</code></dt>
                 <dd>Deletes an item of editor contents specified by <code>payload</code>.<br/>
@@ -50,7 +50,6 @@
                     <li><code>fromIndex</code> - source position.</li>
                 </ul>
                 Sends a message to the first port with <code>true</code>(success) or <code>false</code>(error) as <code>payload</code> value.</dd>
-                </dd>
             <dt><code>getById</code></dt>
                 <dd>Get an item of editor content specified by ID.<br/>
                 Sends a message to the first port with the element or <code>false</code>(error) as <code>payload</code> value.</dd>
@@ -74,7 +73,6 @@
                     <li><code>needsToSetFocus</code> - set focus to the new element.</li>
                 </ul>
                 Sends a message to the first port with <code>true</code>(success) or <code>false</code>(error) as <code>payload</code> value.</dd>
-                </dd>
             <dt><code>update</code></dt>
                 <dd>Update the specified item of the editor contents. <code>payload</code> should be a object with following properties:<br/>
                 <ul>

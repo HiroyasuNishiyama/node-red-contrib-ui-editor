@@ -54,7 +54,7 @@
             order: {value: 0},
             width: {
                 value: 0,
-                validate: (v) => {
+                validate: function (v) {
                     var valid = true
                     var width = v||0;
                     var currentGroup = $('#node-input-group').val()|| this.group;
@@ -76,13 +76,13 @@
         align: "right",
         icon: "font-awesome/fa-list-alt",
         paletteLabel:"editor",
-        label: () => {
+        label: function () {
             return this.name || "editor";
         },
-        labelStyle: () => {
+        labelStyle: function ()  {
             return this.name ? "node_label_italic" : "";
         },
-        oneditprepare: () => {
+        oneditprepare: function () {
             $("#node-input-size").elementSizer({
                 width: "#node-input-width",
                 height: "#node-input-height",
@@ -95,7 +95,7 @@
                 $("#node-input-outputs").val(1);
             }
         },
-        oneditsave: () => {
+        oneditsave: function () {
         },
     });
 </script>
